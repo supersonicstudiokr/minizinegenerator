@@ -1,1 +1,627 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mini Zine Generator (A4 One-Sheet, 8 pages)</title>
+  <style>
+    :root{
+      --gap: 8px;
+      --border: 2px;
+      --ui-max: 980px;
+      --font: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif;
+    }
+    body{
+      margin:0;
+      font-family: var(--font);
+      background:#f6f6f6;
+      color:#111;
+    }
+    .wrap{
+      max-width: var(--ui-max);
+      margin: 24px auto 64px;
+      padding: 0 16px;
+    }
+    h1{
+      font-size: 20px;
+      margin: 0 0 10px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+    .sub{
+      margin:0 0 18px;
+      font-size: 14px;
+      line-height: 1.4;
+      color:#444;
+    }
+    .card{
+      background:#fff;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.06);
+      margin-bottom: 14px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    label{
+      display:block;
+      font-size: 13px;
+      color:#222;
+      margin: 0 0 6px;
+      font-weight: 700;
+    }
+    input[type="text"], textarea{
+      width:100%;
+      border:1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline:none;
+    }
+    textarea{ min-height: 76px; resize: vertical; }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn{
+      appearance:none;
+      border:0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      background:#111;
+      color:#fff;
+      font-weight: 800;
+      cursor:pointer;
+      font-size: 14px;
+    }
+    .btn.secondary{
+      background:#eee;
+      color:#111;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .hint{
+      font-size: 12px;
+      color:#666;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
 
+    /* --- ZINE SHEET (screen) --- */
+    .sheetWrap{
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    .sheetTitle{
+      font-size: 13px;
+      color:#555;
+    }
+
+    /* A4 landscape ratio container for preview */
+    .sheet{
+      width: min(980px, 100%);
+      aspect-ratio: 297 / 210; /* landscape */
+      background:#fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.08);
+      padding: var(--gap);
+      box-sizing: border-box;
+    }
+
+    /* 2 rows x 4 cols => 8 panels */
+    .panels{
+      height:100%;
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: var(--gap);
+    }
+    .p{
+      border: var(--border) solid #111;
+      border-radius: 10px;
+      overflow:hidden;
+      position: relative;
+      padding: 10px;
+      box-sizing: border-box;
+      display:flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .p small{
+      font-size: 11px;
+      color:#444;
+      font-weight: 800;
+      letter-spacing: .2px;
+      text-transform: uppercase;
+    }
+    .p .big{
+      font-weight: 900;
+      font-size: 15px;
+      line-height: 1.15;
+      letter-spacing: -0.2px;
+    }
+    .p .txt{
+      font-size: 12.5px;
+      line-height: 1.25;
+      color:#111;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .tag{
+      font-size: 11px;
+      color:#111;
+      border:1px solid #111;
+      display:inline-block;
+      padding: 3px 7px;
+      border-radius: 999px;
+      font-weight: 800;
+      width: fit-content;
+    }
+    .photoBox{
+      border: 1px solid #111;
+      border-radius: 10px;
+      overflow:hidden;
+      height: 100%;
+      min-height: 0;
+      position: relative;
+      background: #f3f3f3;
+    }
+    .photoBox img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+    }
+    .photoOverlay{
+      position:absolute;
+      left: 10px;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid #111;
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+    .photoOverlay .name{
+      font-weight: 950;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+    .photoOverlay .meta{
+      font-size: 11px;
+      color:#333;
+      font-weight: 800;
+    }
+
+    .stampArea{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .stamp{
+      border: 2px dashed #111;
+      border-radius: 12px;
+      padding: 10px;
+      min-height: 54px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      font-weight: 950;
+      font-size: 12px;
+      line-height: 1.15;
+    }
+    .qrFake{
+      border:1px solid #111;
+      border-radius: 10px;
+      padding: 10px;
+      display:flex;
+      gap: 10px;
+      align-items:center;
+    }
+    .qrBox{
+      width: 44px; height: 44px;
+      border: 2px solid #111;
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+      gap: 2px;
+      padding: 4px;
+      box-sizing: border-box;
+    }
+    .qrBox div{ background:#111; }
+    .qrText{
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    /* --- PRINT: A4 landscape, hide UI, exact sizing --- */
+    @page{
+      size: A4 landscape;
+      margin: 6mm;
+    }
+    @media print{
+      body{ background:#fff; }
+      .wrap{ max-width: none; margin:0; padding:0; }
+      .no-print{ display:none !important; }
+      .sheet{
+        width: 100%;
+        height: calc(210mm - 12mm); /* page height minus margins (approx) */
+        aspect-ratio: auto;
+        box-shadow:none;
+        border-radius:0;
+        padding: 0;
+      }
+      .panels{ gap: 3mm; }
+      .p{ border-radius: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="no-print">
+      <h1>Mini Zine Generator — A4 한 장 접지 8페이지</h1>
+      <p class="sub">
+        사진 + 짧은 답변 + 라디오 선택을 입력하면, 아래에 <b>한 장짜리(8p 접지용)</b> 레이아웃이 자동 생성돼요.  
+        현장에서는 <b>인쇄</b>만 누르면 됩니다.
+      </p>
+
+      <div class="card">
+        <div class="grid">
+          <div>
+            <label>닉네임 / 이름</label>
+            <input id="name" type="text" placeholder="예: Joohee / SUPERSONIC STUDIO / Zine Traveller" />
+            <div class="hint">짧게! (레이아웃 깨짐 방지)</div>
+          </div>
+
+          <div>
+            <label>사진 업로드 (표지용)</label>
+            <input id="photo" type="file" accept="image/*" />
+            <div class="hint">부스 태블릿/폰에서 바로 촬영 후 업로드해도 OK</div>
+          </div>
+        </div>
+
+        <div style="height:10px"></div>
+
+        <div class="grid">
+          <div>
+            <label>Q1. 오늘의 무드</label>
+            <div class="row">
+              <label><input type="radio" name="mood" value="LOUD" checked> LOUD</label>
+              <label><input type="radio" name="mood" value="QUIET"> QUIET</label>
+              <label><input type="radio" name="mood" value="MOUNTAIN"> MOUNTAIN</label>
+              <label><input type="radio" name="mood" value="CITY"> CITY</label>
+            </div>
+          </div>
+          <div>
+            <label>Q2. 오늘 모으는 것</label>
+            <div class="row">
+              <label><input type="radio" name="collect" value="SOUND" checked> SOUND</label>
+              <label><input type="radio" name="collect" value="MEMORY"> MEMORY</label>
+              <label><input type="radio" name="collect" value="ANGER"> ANGER</label>
+              <label><input type="radio" name="collect" value="LOVE"> LOVE</label>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:10px"></div>
+
+        <div class="grid">
+          <div>
+            <label>Q3. 한 줄 소개 (짧게)</label>
+            <input id="from" type="text" placeholder="예: Incheon / Seoul / Cebu / Highlands…" maxlength="80" />
+          </div>
+          <div>
+            <label>Q4. 좋아하는 소리/음악 (짧게)</label>
+            <input id="sound" type="text" placeholder="예: synth bass / birds at 6am / punk drums…" maxlength="80" />
+          </div>
+        </div>
+
+        <div style="height:10px"></div>
+
+        <div class="grid">
+          <div>
+            <label>Q5. 나는 출판한다, 왜냐하면… (한 문장)</label>
+            <textarea id="because" placeholder="예: because I want to keep small scenes alive." maxlength="160"></textarea>
+            <div class="hint">최대 160자</div>
+          </div>
+          <div>
+            <label>Q6. 오늘 지키고 싶은 것 (한 줄)</label>
+            <textarea id="keep" placeholder="예: a tiny friendship / a flyer / a feeling / a smell…" maxlength="120"></textarea>
+            <div class="hint">최대 120자</div>
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="row">
+          <button class="btn" id="printBtn">인쇄하기 (A4 가로)</button>
+          <button class="btn secondary" id="randomBtn">랜덤 답변 채우기</button>
+          <button class="btn secondary" id="resetBtn">초기화</button>
+        </div>
+
+        <p class="hint">
+          ✅ 출력 팁: 브라우저 인쇄 설정에서 <b>가로(landscape)</b>, <b>여백 최소</b>, <b>배경 그래픽 인쇄</b> 켜면 더 예쁘게 나와요.
+        </p>
+      </div>
+    </div>
+
+    <div class="sheetWrap">
+      <div class="sheetTitle no-print">미리보기 (이 영역이 인쇄됩니다)</div>
+
+      <!-- The printable sheet -->
+      <div class="sheet" id="sheet">
+        <div class="panels" id="panels">
+          <!-- Classic one-sheet mini zine imposition (single side):
+               Top row (L→R): 8, 1, 2, 7
+               Bottom row (L→R): 6, 3, 4, 5
+          -->
+          <div class="p" data-page="8"></div>
+          <div class="p" data-page="1"></div>
+          <div class="p" data-page="2"></div>
+          <div class="p" data-page="7"></div>
+          <div class="p" data-page="6"></div>
+          <div class="p" data-page="3"></div>
+          <div class="p" data-page="4"></div>
+          <div class="p" data-page="5"></div>
+        </div>
+      </div>
+
+      <div class="no-print hint" style="text-align:center; max-width: 760px;">
+        접지 방식(기본 8p zine fold): A4를 가로로 두고 3번 접은 뒤 가운데 1회 절개/찢기 → 펼쳐서 접으면 8p 완성.
+        (현장에는 접지 가이드 이미지를 붙여두면 좋아요)
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const state = {
+      name: "",
+      from: "",
+      sound: "",
+      because: "",
+      keep: "",
+      mood: "LOUD",
+      collect: "SOUND",
+      photoDataUrl: null
+    };
+
+    function todayStr(){
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function getRadio(name){
+      const el = document.querySelector(`input[name="${name}"]:checked`);
+      return el ? el.value : "";
+    }
+
+    function setRadio(name, value){
+      const els = document.querySelectorAll(`input[name="${name}"]`);
+      els.forEach(e => e.checked = (e.value === value));
+    }
+
+    function readInputs(){
+      state.name = $("name").value.trim();
+      state.from = $("from").value.trim();
+      state.sound = $("sound").value.trim();
+      state.because = $("because").value.trim();
+      state.keep = $("keep").value.trim();
+      state.mood = getRadio("mood");
+      state.collect = getRadio("collect");
+    }
+
+    function escapeHtml(s){
+      return (s || "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;");
+    }
+
+    function panelHtml(page){
+      const name = state.name || "ZINE TRAVELLER";
+      const date = todayStr();
+
+      // Page contents
+      if(page === 1){
+        // Cover with photo
+        const img = state.photoDataUrl
+          ? `<img src="${state.photoDataUrl}" alt="photo" />`
+          : `<div style="height:100%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;color:#333;">
+               Upload a photo
+             </div>`;
+        return `
+          <div class="photoBox">
+            ${img}
+            <div class="photoOverlay">
+              <div class="name">${escapeHtml(name)}</div>
+              <div class="meta">Highland Zine Bothy × SUPERSONIC STUDIO · ${escapeHtml(date)}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      if(page === 2){
+        return `
+          <small>Q1 / Mood</small>
+          <div class="big">${escapeHtml(state.mood)}</div>
+          <div class="txt">오늘의 무드가 이 단어라면, 그 이유는?</div>
+          <div class="tag">Circle it · ${escapeHtml(state.mood)}</div>
+        `;
+      }
+
+      if(page === 3){
+        return `
+          <small>Q2 / Collecting</small>
+          <div class="big">${escapeHtml(state.collect)}</div>
+          <div class="txt">오늘 당신이 모으는 것은 무엇인가요?</div>
+          <div class="tag">Keep · ${escapeHtml(state.collect)}</div>
+        `;
+      }
+
+      if(page === 4){
+        return `
+          <small>Q3 / From</small>
+          <div class="big">I’m from</div>
+          <div class="txt">${escapeHtml(state.from || "(write a place)")}</div>
+          <div class="txt" style="margin-top:6px;">이 장소는 어떤 소리를 갖고 있나요?</div>
+        `;
+      }
+
+      if(page === 5){
+        return `
+          <small>Q4 / Sound</small>
+          <div class="big">A sound I love</div>
+          <div class="txt">${escapeHtml(state.sound || "(write a sound)")}</div>
+          <div class="txt" style="margin-top:6px;">이 소리는 당신을 어디로 데려가나요?</div>
+        `;
+      }
+
+      if(page === 6){
+        return `
+          <small>Q5 / Manifesto</small>
+          <div class="big">I publish because…</div>
+          <div class="txt">${escapeHtml(state.because || "(write one sentence)")}</div>
+        `;
+      }
+
+      if(page === 7){
+        return `
+          <small>Stamps</small>
+          <div class="big">Shared Table</div>
+          <div class="stampArea" style="margin-top:8px;">
+            <div class="stamp">HIGHLAND<br/>ZINE BOTHY<br/>STAMP</div>
+            <div class="stamp">SUPERSONIC<br/>STUDIO<br/>STAMP</div>
+          </div>
+          <div class="txt" style="margin-top:8px;">두 스탬프를 다 받으면<br/>오늘의 “Bothy Visitor” 완료.</div>
+        `;
+      }
+
+      if(page === 8){
+        // Back cover / archive call
+        return `
+          <small>Q6 / Keep</small>
+          <div class="big">Today I keep</div>
+          <div class="txt">${escapeHtml(state.keep || "(write one line)")}</div>
+
+          <div style="height:8px"></div>
+          <div class="qrFake">
+            <div class="qrBox" aria-hidden="true">
+              ${Array.from({length:25}).map((_,i)=>`<div style="opacity:${(i%3===0)?1:0};"></div>`).join("")}
+            </div>
+            <div class="qrText">
+              #StepIntoTheBothy<br/>
+              #SharedTable<br/>
+              (optional) link to archive
+            </div>
+          </div>
+        `;
+      }
+
+      return `<div class="txt">Page ${page}</div>`;
+    }
+
+    function render(){
+      readInputs();
+      const panels = document.querySelectorAll(".p");
+      panels.forEach(p => {
+        const page = Number(p.getAttribute("data-page"));
+        p.innerHTML = panelHtml(page);
+      });
+    }
+
+    async function fileToDataUrl(file){
+      return new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result);
+        r.onerror = reject;
+        r.readAsDataURL(file);
+      });
+    }
+
+    function wire(){
+      ["name","from","sound","because","keep"].forEach(id => {
+        $(id).addEventListener("input", render);
+      });
+
+      document.querySelectorAll('input[name="mood"]').forEach(el => {
+        el.addEventListener("change", render);
+      });
+      document.querySelectorAll('input[name="collect"]').forEach(el => {
+        el.addEventListener("change", render);
+      });
+
+      $("photo").addEventListener("change", async (e) => {
+        const f = e.target.files && e.target.files[0];
+        if(!f) return;
+        // Basic size guard (keeps it snappy on site)
+        if(f.size > 6 * 1024 * 1024){
+          alert("사진 용량이 너무 커요. 6MB 이하로 업로드해 주세요.");
+          e.target.value = "";
+          return;
+        }
+        state.photoDataUrl = await fileToDataUrl(f);
+        render();
+      });
+
+      $("printBtn").addEventListener("click", () => {
+        render();
+        window.print();
+      });
+
+      $("resetBtn").addEventListener("click", () => {
+        $("name").value = "";
+        $("from").value = "";
+        $("sound").value = "";
+        $("because").value = "";
+        $("keep").value = "";
+        state.photoDataUrl = null;
+        $("photo").value = "";
+        setRadio("mood", "LOUD");
+        setRadio("collect", "SOUND");
+        render();
+      });
+
+      $("randomBtn").addEventListener("click", () => {
+        const names = ["BOTHY VISITOR", "ZINE WALKER", "SCENE BRIDGER", "DIY ARCHIVIST", "NIGHT EDITOR"];
+        const places = ["Incheon", "Seoul", "Busan", "Highlands", "London", "Cebu", "Taipei"];
+        const sounds = ["synth bass", "train hum", "birds at 6am", "club kick", "page flips", "rain on roof"];
+        const because = [
+          "because small scenes deserve a place to stay.",
+          "because I want to keep the in-between moments.",
+          "because paper can hold what algorithms miss.",
+          "because I’m building a bridge with tiny pages."
+        ];
+        const keep = ["a tiny friendship", "a flyer", "a sentence", "a feeling", "a sound in my pocket"];
+
+        $("name").value = names[Math.floor(Math.random()*names.length)];
+        $("from").value = places[Math.floor(Math.random()*places.length)];
+        $("sound").value = sounds[Math.floor(Math.random()*sounds.length)];
+        $("because").value = because[Math.floor(Math.random()*because.length)];
+        $("keep").value = keep[Math.floor(Math.random()*keep.length)];
+
+        const moods = ["LOUD","QUIET","MOUNTAIN","CITY"];
+        const collects = ["SOUND","MEMORY","ANGER","LOVE"];
+        setRadio("mood", moods[Math.floor(Math.random()*moods.length)]);
+        setRadio("collect", collects[Math.floor(Math.random()*collects.length)]);
+        render();
+      });
+    }
+
+    wire();
+    render();
+  </script>
+</body>
+</html>
