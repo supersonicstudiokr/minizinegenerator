@@ -7,114 +7,42 @@
   <style>
     :root{
       --gap: 8px;
-      --border: 2px;
+      --border: 0px;          /* ✅ 프레임(테두리) 제거 */
       --ui-max: 980px;
       --font: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif;
     }
-    body{
-      margin:0;
-      font-family: var(--font);
-      background:#f6f6f6;
-      color:#111;
-    }
-    .wrap{
-      max-width: var(--ui-max);
-      margin: 24px auto 64px;
-      padding: 0 16px;
-    }
-    h1{
-      font-size: 20px;
-      margin: 0 0 10px;
-      font-weight: 800;
-      letter-spacing: -0.2px;
-    }
-    .sub{
-      margin:0 0 18px;
-      font-size: 14px;
-      line-height: 1.4;
-      color:#444;
-    }
-    .card{
-      background:#fff;
-      border-radius: 14px;
-      padding: 16px;
-      box-shadow: 0 10px 22px rgba(0,0,0,.06);
-      margin-bottom: 14px;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    label{
-      display:block;
-      font-size: 13px;
-      color:#222;
-      margin: 0 0 6px;
-      font-weight: 700;
-    }
+    body{ margin:0; font-family: var(--font); background:#f6f6f6; color:#111; }
+    .wrap{ max-width: var(--ui-max); margin: 24px auto 64px; padding: 0 16px; }
+    h1{ font-size: 20px; margin: 0 0 10px; font-weight: 800; letter-spacing: -0.2px; }
+    .sub{ margin:0 0 18px; font-size: 14px; line-height: 1.4; color:#444; }
+    .card{ background:#fff; border-radius: 14px; padding: 16px; box-shadow: 0 10px 22px rgba(0,0,0,.06); margin-bottom: 14px; }
+    .grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label{ display:block; font-size: 13px; color:#222; margin: 0 0 6px; font-weight: 700; }
     input[type="text"], textarea{
-      width:100%;
-      border:1px solid #ddd;
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-size: 14px;
-      outline:none;
+      width:100%; border:1px solid #ddd; border-radius: 10px; padding: 10px 12px; font-size: 14px; outline:none;
     }
     textarea{ min-height: 76px; resize: vertical; }
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
+    .row{ display:flex; gap:10px; flex-wrap: wrap; align-items: center; }
     .btn{
-      appearance:none;
-      border:0;
-      border-radius: 12px;
-      padding: 10px 12px;
-      background:#111;
-      color:#fff;
-      font-weight: 800;
-      cursor:pointer;
-      font-size: 14px;
+      appearance:none; border:0; border-radius: 12px; padding: 10px 12px;
+      background:#111; color:#fff; font-weight: 800; cursor:pointer; font-size: 14px;
     }
-    .btn.secondary{
-      background:#eee;
-      color:#111;
-    }
+    .btn.secondary{ background:#eee; color:#111; }
     .btn:active{ transform: translateY(1px); }
-    .hint{
-      font-size: 12px;
-      color:#666;
-      margin-top: 8px;
-      line-height: 1.4;
-    }
+    .hint{ font-size: 12px; color:#666; margin-top: 8px; line-height: 1.4; }
 
-    /* --- ZINE SHEET (screen) --- */
-    .sheetWrap{
-      display:flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items: center;
-    }
-    .sheetTitle{
-      font-size: 13px;
-      color:#555;
-    }
+    .sheetWrap{ display:flex; flex-direction: column; gap: 10px; align-items: center; }
+    .sheetTitle{ font-size: 13px; color:#555; }
 
-    /* A4 landscape ratio container for preview */
     .sheet{
       width: min(980px, 100%);
-      aspect-ratio: 297 / 210; /* landscape */
+      aspect-ratio: 297 / 210; /* A4 landscape preview */
       background:#fff;
       border-radius: 12px;
       box-shadow: 0 10px 22px rgba(0,0,0,.08);
       padding: var(--gap);
       box-sizing: border-box;
     }
-
-    /* 2 rows x 4 cols => 8 panels */
     .panels{
       height:100%;
       display:grid;
@@ -123,8 +51,8 @@
       gap: var(--gap);
     }
     .p{
-      border: var(--border) solid #111;
-      border-radius: 10px;
+      border: var(--border) solid #111;  /* ✅ border=0이라 프레임 없음 */
+      border-radius: 0px;               /* ✅ 둥근 모서리도 제거 */
       overflow:hidden;
       position: relative;
       padding: 10px;
@@ -133,71 +61,27 @@
       flex-direction: column;
       justify-content: space-between;
     }
-    .p small{
-      font-size: 11px;
-      color:#444;
-      font-weight: 800;
-      letter-spacing: .2px;
-      text-transform: uppercase;
-    }
-    .p .big{
-      font-weight: 900;
-      font-size: 15px;
-      line-height: 1.15;
-      letter-spacing: -0.2px;
-    }
-    .p .txt{
-      font-size: 12.5px;
-      line-height: 1.25;
-      color:#111;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    .tag{
-      font-size: 11px;
-      color:#111;
-      border:1px solid #111;
-      display:inline-block;
-      padding: 3px 7px;
-      border-radius: 999px;
-      font-weight: 800;
-      width: fit-content;
-    }
+    .p small{ font-size: 11px; color:#444; font-weight: 800; letter-spacing: .2px; text-transform: uppercase; }
+    .p .big{ font-weight: 900; font-size: 15px; line-height: 1.15; letter-spacing: -0.2px; }
+    .p .txt{ font-size: 12.5px; line-height: 1.25; color:#111; white-space: pre-wrap; word-break: break-word; }
+
     .photoBox{
-      border: 1px solid #111;
-      border-radius: 10px;
-      overflow:hidden;
       height: 100%;
       min-height: 0;
       position: relative;
       background: #f3f3f3;
+      overflow:hidden;
     }
-    .photoBox img{
-      width:100%;
-      height:100%;
-      object-fit: cover;
-      display:block;
-    }
+    .photoBox img{ width:100%; height:100%; object-fit: cover; display:block; }
     .photoOverlay{
-      position:absolute;
-      left: 10px;
-      bottom: 10px;
-      right: 10px;
+      position:absolute; left: 10px; bottom: 10px; right: 10px;
       background: rgba(255,255,255,.92);
-      border: 1px solid #111;
+      border: 0;           /* ✅ 오버레이 프레임도 제거 */
       border-radius: 10px;
       padding: 8px 10px;
     }
-    .photoOverlay .name{
-      font-weight: 950;
-      font-size: 13px;
-      margin-bottom: 3px;
-    }
-    .photoOverlay .meta{
-      font-size: 11px;
-      color:#333;
-      font-weight: 800;
-    }
+    .photoOverlay .name{ font-weight: 950; font-size: 13px; margin-bottom: 3px; }
+    .photoOverlay .meta{ font-size: 11px; color:#333; font-weight: 800; }
 
     .stampArea{
       display:grid;
@@ -217,152 +101,162 @@
       font-size: 12px;
       line-height: 1.15;
     }
-    .qrFake{
-      border:1px solid #111;
-      border-radius: 10px;
-      padding: 10px;
-      display:flex;
-      gap: 10px;
-      align-items:center;
-    }
-    .qrBox{
-      width: 44px; height: 44px;
-      border: 2px solid #111;
+
+    .camRow{
       display:grid;
-      grid-template-columns: repeat(5, 1fr);
-      grid-template-rows: repeat(5, 1fr);
-      gap: 2px;
-      padding: 4px;
-      box-sizing: border-box;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: start;
     }
-    .qrBox div{ background:#111; }
-    .qrText{
+    .camBox{
+      border:1px solid #eee;
+      border-radius: 12px;
+      padding: 12px;
+      background:#fafafa;
+    }
+    .thumbs{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .thumb{
+      width:100%;
+      aspect-ratio: 1/1;
+      border-radius: 10px;
+      background:#eaeaea;
+      overflow:hidden;
+      position:relative;
+    }
+    .thumb img{ width:100%; height:100%; object-fit: cover; display:block; }
+    .thumb span{
+      position:absolute; left:8px; top:8px;
+      background: rgba(255,255,255,.9);
+      padding: 3px 7px;
+      border-radius: 999px;
       font-size: 11px;
-      line-height: 1.2;
-      font-weight: 800;
+      font-weight: 900;
     }
 
-    /* --- PRINT: A4 landscape, hide UI, exact sizing --- */
-    @page{
-      size: A4 landscape;
-      margin: 6mm;
+    video{
+      width:100%;
+      border-radius: 12px;
+      background:#111;
+      max-height: 340px;
     }
+
+    @page{ size: A4 landscape; margin: 6mm; }
     @media print{
       body{ background:#fff; }
       .wrap{ max-width: none; margin:0; padding:0; }
       .no-print{ display:none !important; }
       .sheet{
         width: 100%;
-        height: calc(210mm - 12mm); /* page height minus margins (approx) */
+        height: calc(210mm - 12mm);
         aspect-ratio: auto;
         box-shadow:none;
         border-radius:0;
         padding: 0;
       }
       .panels{ gap: 3mm; }
-      .p{ border-radius: 0; }
+      .p{ border: 0 !important; border-radius: 0 !important; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="no-print">
-      <h1>Mini Zine Generator — A4 한 장 접지 8페이지</h1>
+      <h1>Mini Zine Generator — A4 한 장 접지 8페이지 (사진 3장)</h1>
       <p class="sub">
-        사진 + 짧은 답변 + 라디오 선택을 입력하면, 아래에 <b>한 장짜리(8p 접지용)</b> 레이아웃이 자동 생성돼요.  
-        현장에서는 <b>인쇄</b>만 누르면 됩니다.
+        현장에서 <b>카메라로 3장 촬영</b> + 짧은 답변 입력 → 아래 레이아웃이 자동 생성 → <b>인쇄</b>.
+        (GitHub Pages는 HTTPS라 카메라 동작 OK)
       </p>
 
       <div class="card">
         <div class="grid">
           <div>
             <label>닉네임 / 이름</label>
-            <input id="name" type="text" placeholder="예: Joohee / SUPERSONIC STUDIO / Zine Traveller" />
+            <input id="name" type="text" placeholder="예: Zine Traveller" maxlength="40" />
             <div class="hint">짧게! (레이아웃 깨짐 방지)</div>
           </div>
-
           <div>
-            <label>사진 업로드 (표지용)</label>
-            <input id="photo" type="file" accept="image/*" />
-            <div class="hint">부스 태블릿/폰에서 바로 촬영 후 업로드해도 OK</div>
+            <label>한 줄 태그라인 (옵션)</label>
+            <input id="tagline" type="text" placeholder="예: Step Into the Bothy" maxlength="60" />
           </div>
         </div>
 
-        <div style="height:10px"></div>
+        <div style="height:14px"></div>
 
-        <div class="grid">
-          <div>
-            <label>Q1. 오늘의 무드</label>
+        <div class="camRow">
+          <div class="camBox">
+            <label>📷 현장 카메라 촬영 (3장)</label>
             <div class="row">
-              <label><input type="radio" name="mood" value="LOUD" checked> LOUD</label>
-              <label><input type="radio" name="mood" value="QUIET"> QUIET</label>
-              <label><input type="radio" name="mood" value="MOUNTAIN"> MOUNTAIN</label>
-              <label><input type="radio" name="mood" value="CITY"> CITY</label>
+              <button class="btn" id="startCam">카메라 켜기</button>
+              <button class="btn secondary" id="stopCam">카메라 끄기</button>
+              <button class="btn secondary" id="flipCam">카메라 전환</button>
+            </div>
+            <div class="hint">권한 요청이 뜨면 “허용” 눌러줘. iPhone은 버튼을 눌러야 카메라가 켜져.</div>
+            <div style="height:10px"></div>
+            <video id="video" playsinline autoplay muted></video>
+
+            <div class="row" style="margin-top:10px;">
+              <button class="btn" id="snap1">사진 1 찍기</button>
+              <button class="btn" id="snap2">사진 2 찍기</button>
+              <button class="btn" id="snap3">사진 3 찍기</button>
+              <button class="btn secondary" id="clearPhotos">사진 초기화</button>
+            </div>
+
+            <div class="thumbs">
+              <div class="thumb"><span>1</span><img id="ph1" alt="" /></div>
+              <div class="thumb"><span>2</span><img id="ph2" alt="" /></div>
+              <div class="thumb"><span>3</span><img id="ph3" alt="" /></div>
+            </div>
+
+            <div class="hint">카메라가 안 될 때(기기 제한/권한 문제) 대비로 아래 업로드도 가능하게 해뒀어.</div>
+            <div class="row">
+              <input id="upload1" type="file" accept="image/*" />
+              <input id="upload2" type="file" accept="image/*" />
+              <input id="upload3" type="file" accept="image/*" />
             </div>
           </div>
-          <div>
-            <label>Q2. 오늘 모으는 것</label>
+
+          <div class="camBox">
+            <label>짧은 질문 입력</label>
+
+            <label style="margin-top:8px;">Q1. 나는 출판한다, 왜냐하면… (한 문장)</label>
+            <textarea id="because" placeholder="예: because small scenes deserve a place to stay." maxlength="160"></textarea>
+
+            <label style="margin-top:10px;">Q2. 오늘 내가 지키고 싶은 것 (한 줄)</label>
+            <input id="keep" type="text" placeholder="예: a tiny friendship" maxlength="80" />
+
+            <label style="margin-top:10px;">Q3. 내가 온 곳 (짧게)</label>
+            <input id="from" type="text" placeholder="예: Incheon / Seoul / Highlands" maxlength="60" />
+
+            <label style="margin-top:10px;">Q4. 오늘의 소리 (짧게)</label>
+            <input id="sound" type="text" placeholder="예: synth bass / rain on roof" maxlength="60" />
+
+            <div style="height:12px"></div>
             <div class="row">
-              <label><input type="radio" name="collect" value="SOUND" checked> SOUND</label>
-              <label><input type="radio" name="collect" value="MEMORY"> MEMORY</label>
-              <label><input type="radio" name="collect" value="ANGER"> ANGER</label>
-              <label><input type="radio" name="collect" value="LOVE"> LOVE</label>
+              <button class="btn" id="printBtn">인쇄하기 (A4 가로)</button>
+              <button class="btn secondary" id="randomBtn">랜덤 채우기</button>
+              <button class="btn secondary" id="resetBtn">초기화</button>
             </div>
+
+            <p class="hint">
+              출력 팁: 인쇄 설정에서 <b>가로</b>, <b>여백 최소</b>, (가능하면) <b>배경 그래픽 인쇄</b> 켜기.
+            </p>
           </div>
         </div>
-
-        <div style="height:10px"></div>
-
-        <div class="grid">
-          <div>
-            <label>Q3. 한 줄 소개 (짧게)</label>
-            <input id="from" type="text" placeholder="예: Incheon / Seoul / Cebu / Highlands…" maxlength="80" />
-          </div>
-          <div>
-            <label>Q4. 좋아하는 소리/음악 (짧게)</label>
-            <input id="sound" type="text" placeholder="예: synth bass / birds at 6am / punk drums…" maxlength="80" />
-          </div>
-        </div>
-
-        <div style="height:10px"></div>
-
-        <div class="grid">
-          <div>
-            <label>Q5. 나는 출판한다, 왜냐하면… (한 문장)</label>
-            <textarea id="because" placeholder="예: because I want to keep small scenes alive." maxlength="160"></textarea>
-            <div class="hint">최대 160자</div>
-          </div>
-          <div>
-            <label>Q6. 오늘 지키고 싶은 것 (한 줄)</label>
-            <textarea id="keep" placeholder="예: a tiny friendship / a flyer / a feeling / a smell…" maxlength="120"></textarea>
-            <div class="hint">최대 120자</div>
-          </div>
-        </div>
-
-        <div style="height:12px"></div>
-
-        <div class="row">
-          <button class="btn" id="printBtn">인쇄하기 (A4 가로)</button>
-          <button class="btn secondary" id="randomBtn">랜덤 답변 채우기</button>
-          <button class="btn secondary" id="resetBtn">초기화</button>
-        </div>
-
-        <p class="hint">
-          ✅ 출력 팁: 브라우저 인쇄 설정에서 <b>가로(landscape)</b>, <b>여백 최소</b>, <b>배경 그래픽 인쇄</b> 켜면 더 예쁘게 나와요.
-        </p>
       </div>
     </div>
 
     <div class="sheetWrap">
       <div class="sheetTitle no-print">미리보기 (이 영역이 인쇄됩니다)</div>
 
-      <!-- The printable sheet -->
       <div class="sheet" id="sheet">
         <div class="panels" id="panels">
-          <!-- Classic one-sheet mini zine imposition (single side):
-               Top row (L→R): 8, 1, 2, 7
-               Bottom row (L→R): 6, 3, 4, 5
-          -->
+          <!-- One-sheet 8-page imposition:
+               Top: 8,1,2,7  / Bottom: 6,3,4,5 -->
           <div class="p" data-page="8"></div>
           <div class="p" data-page="1"></div>
           <div class="p" data-page="2"></div>
@@ -375,8 +269,7 @@
       </div>
 
       <div class="no-print hint" style="text-align:center; max-width: 760px;">
-        접지 방식(기본 8p zine fold): A4를 가로로 두고 3번 접은 뒤 가운데 1회 절개/찢기 → 펼쳐서 접으면 8p 완성.
-        (현장에는 접지 가이드 이미지를 붙여두면 좋아요)
+        A4 8p 접지: 3번 접고 가운데 절개/찢기 → 펼쳐서 접으면 8페이지 완성.
       </div>
     </div>
   </div>
@@ -386,13 +279,14 @@
 
     const state = {
       name: "",
+      tagline: "",
       from: "",
       sound: "",
       because: "",
       keep: "",
-      mood: "LOUD",
-      collect: "SOUND",
-      photoDataUrl: null
+      photos: [null, null, null], // dataURLs
+      stream: null,
+      facingMode: "user" // or "environment"
     };
 
     function todayStr(){
@@ -403,24 +297,13 @@
       return `${yyyy}-${mm}-${dd}`;
     }
 
-    function getRadio(name){
-      const el = document.querySelector(`input[name="${name}"]:checked`);
-      return el ? el.value : "";
-    }
-
-    function setRadio(name, value){
-      const els = document.querySelectorAll(`input[name="${name}"]`);
-      els.forEach(e => e.checked = (e.value === value));
-    }
-
     function readInputs(){
       state.name = $("name").value.trim();
-      state.from = $("from").value.trim();
-      state.sound = $("sound").value.trim();
+      state.tagline = $("tagline").value.trim();
       state.because = $("because").value.trim();
       state.keep = $("keep").value.trim();
-      state.mood = getRadio("mood");
-      state.collect = getRadio("collect");
+      state.from = $("from").value.trim();
+      state.sound = $("sound").value.trim();
     }
 
     function escapeHtml(s){
@@ -430,24 +313,31 @@
         .replaceAll(">","&gt;");
     }
 
+    function imgOrPlaceholder(dataUrl, text){
+      if(dataUrl){
+        return `<img src="${dataUrl}" alt="photo" />`;
+      }
+      return `<div style="height:100%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;color:#333;">
+        ${escapeHtml(text)}
+      </div>`;
+    }
+
+    // Pages:
+    // p1 cover uses photo1
+    // p3 uses photo2
+    // p5 uses photo3
     function panelHtml(page){
       const name = state.name || "ZINE TRAVELLER";
       const date = todayStr();
+      const tagline = state.tagline || "Highland Zine Bothy × SUPERSONIC STUDIO";
 
-      // Page contents
       if(page === 1){
-        // Cover with photo
-        const img = state.photoDataUrl
-          ? `<img src="${state.photoDataUrl}" alt="photo" />`
-          : `<div style="height:100%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px;color:#333;">
-               Upload a photo
-             </div>`;
         return `
           <div class="photoBox">
-            ${img}
+            ${imgOrPlaceholder(state.photos[0], "Take Photo 1")}
             <div class="photoOverlay">
               <div class="name">${escapeHtml(name)}</div>
-              <div class="meta">Highland Zine Bothy × SUPERSONIC STUDIO · ${escapeHtml(date)}</div>
+              <div class="meta">${escapeHtml(tagline)} · ${escapeHtml(date)}</div>
             </div>
           </div>
         `;
@@ -455,45 +345,44 @@
 
       if(page === 2){
         return `
-          <small>Q1 / Mood</small>
-          <div class="big">${escapeHtml(state.mood)}</div>
-          <div class="txt">오늘의 무드가 이 단어라면, 그 이유는?</div>
-          <div class="tag">Circle it · ${escapeHtml(state.mood)}</div>
+          <small>Q1</small>
+          <div class="big">I publish because…</div>
+          <div class="txt">${escapeHtml(state.because || "(write one sentence)")}</div>
         `;
       }
 
       if(page === 3){
         return `
-          <small>Q2 / Collecting</small>
-          <div class="big">${escapeHtml(state.collect)}</div>
-          <div class="txt">오늘 당신이 모으는 것은 무엇인가요?</div>
-          <div class="tag">Keep · ${escapeHtml(state.collect)}</div>
+          <div class="photoBox">
+            ${imgOrPlaceholder(state.photos[1], "Take Photo 2")}
+          </div>
         `;
       }
 
       if(page === 4){
         return `
-          <small>Q3 / From</small>
-          <div class="big">I’m from</div>
-          <div class="txt">${escapeHtml(state.from || "(write a place)")}</div>
-          <div class="txt" style="margin-top:6px;">이 장소는 어떤 소리를 갖고 있나요?</div>
+          <small>Q2</small>
+          <div class="big">Today I keep</div>
+          <div class="txt">${escapeHtml(state.keep || "(one line)")}</div>
+          <div class="txt" style="margin-top:10px;">From: <b>${escapeHtml(state.from || "(place)")}</b></div>
         `;
       }
 
       if(page === 5){
         return `
-          <small>Q4 / Sound</small>
-          <div class="big">A sound I love</div>
-          <div class="txt">${escapeHtml(state.sound || "(write a sound)")}</div>
-          <div class="txt" style="margin-top:6px;">이 소리는 당신을 어디로 데려가나요?</div>
+          <div class="photoBox">
+            ${imgOrPlaceholder(state.photos[2], "Take Photo 3")}
+          </div>
         `;
       }
 
       if(page === 6){
         return `
-          <small>Q5 / Manifesto</small>
-          <div class="big">I publish because…</div>
-          <div class="txt">${escapeHtml(state.because || "(write one sentence)")}</div>
+          <small>Q3</small>
+          <div class="big">A sound today</div>
+          <div class="txt">${escapeHtml(state.sound || "(short sound)")}</div>
+          <div class="txt" style="margin-top:10px;">Write a tiny note here:</div>
+          <div style="height:42px;border-top:1px solid #111;"></div>
         `;
       }
 
@@ -501,32 +390,22 @@
         return `
           <small>Stamps</small>
           <div class="big">Shared Table</div>
-          <div class="stampArea" style="margin-top:8px;">
+          <div class="stampArea" style="margin-top:10px;">
             <div class="stamp">HIGHLAND<br/>ZINE BOTHY<br/>STAMP</div>
             <div class="stamp">SUPERSONIC<br/>STUDIO<br/>STAMP</div>
           </div>
-          <div class="txt" style="margin-top:8px;">두 스탬프를 다 받으면<br/>오늘의 “Bothy Visitor” 완료.</div>
+          <div class="txt" style="margin-top:10px;">두 스탬프를 다 받으면 오늘의 방문 기록 완료.</div>
         `;
       }
 
       if(page === 8){
-        // Back cover / archive call
         return `
-          <small>Q6 / Keep</small>
-          <div class="big">Today I keep</div>
-          <div class="txt">${escapeHtml(state.keep || "(write one line)")}</div>
-
-          <div style="height:8px"></div>
-          <div class="qrFake">
-            <div class="qrBox" aria-hidden="true">
-              ${Array.from({length:25}).map((_,i)=>`<div style="opacity:${(i%3===0)?1:0};"></div>`).join("")}
-            </div>
-            <div class="qrText">
-              #StepIntoTheBothy<br/>
-              #SharedTable<br/>
-              (optional) link to archive
-            </div>
-          </div>
+          <small>Back</small>
+          <div class="big">${escapeHtml(name)}</div>
+          <div class="txt">${escapeHtml(tagline)}</div>
+          <div class="txt" style="margin-top:12px;">#StepIntoTheBothy #SharedTable</div>
+          <div style="margin-top:12px;border-top:1px solid #111;"></div>
+          <div class="txt" style="margin-top:10px;">(optional) archive QR / info</div>
         `;
       }
 
@@ -540,6 +419,10 @@
         const page = Number(p.getAttribute("data-page"));
         p.innerHTML = panelHtml(page);
       });
+      // thumbs
+      $("ph1").src = state.photos[0] || "";
+      $("ph2").src = state.photos[1] || "";
+      $("ph3").src = state.photos[2] || "";
     }
 
     async function fileToDataUrl(file){
@@ -551,73 +434,137 @@
       });
     }
 
+    async function startCamera(){
+      try{
+        // stop existing
+        await stopCamera();
+
+        const constraints = {
+          video: { facingMode: state.facingMode },
+          audio: false
+        };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        state.stream = stream;
+        $("video").srcObject = stream;
+      }catch(err){
+        console.error(err);
+        alert("카메라를 열 수 없어요. 브라우저 권한/HTTPS/기기 설정을 확인해줘.");
+      }
+    }
+
+    async function stopCamera(){
+      if(state.stream){
+        state.stream.getTracks().forEach(t => t.stop());
+        state.stream = null;
+      }
+      const v = $("video");
+      if(v) v.srcObject = null;
+    }
+
+    function snapTo(index){
+      const v = $("video");
+      if(!v || !state.stream){
+        alert("먼저 카메라를 켜주세요!");
+        return;
+      }
+      const canvas = document.createElement("canvas");
+      // use actual video dimensions when possible
+      const w = v.videoWidth || 1280;
+      const h = v.videoHeight || 720;
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(v, 0, 0, w, h);
+      // compress a bit for speed
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+      state.photos[index] = dataUrl;
+      render();
+    }
+
     function wire(){
-      ["name","from","sound","because","keep"].forEach(id => {
+      ["name","tagline","because","keep","from","sound"].forEach(id => {
         $(id).addEventListener("input", render);
       });
 
-      document.querySelectorAll('input[name="mood"]').forEach(el => {
-        el.addEventListener("change", render);
-      });
-      document.querySelectorAll('input[name="collect"]').forEach(el => {
-        el.addEventListener("change", render);
-      });
+      $("printBtn").addEventListener("click", () => { render(); window.print(); });
 
-      $("photo").addEventListener("change", async (e) => {
-        const f = e.target.files && e.target.files[0];
-        if(!f) return;
-        // Basic size guard (keeps it snappy on site)
-        if(f.size > 6 * 1024 * 1024){
-          alert("사진 용량이 너무 커요. 6MB 이하로 업로드해 주세요.");
-          e.target.value = "";
-          return;
-        }
-        state.photoDataUrl = await fileToDataUrl(f);
-        render();
-      });
-
-      $("printBtn").addEventListener("click", () => {
-        render();
-        window.print();
-      });
-
-      $("resetBtn").addEventListener("click", () => {
+      $("resetBtn").addEventListener("click", async () => {
         $("name").value = "";
-        $("from").value = "";
-        $("sound").value = "";
+        $("tagline").value = "";
         $("because").value = "";
         $("keep").value = "";
-        state.photoDataUrl = null;
-        $("photo").value = "";
-        setRadio("mood", "LOUD");
-        setRadio("collect", "SOUND");
+        $("from").value = "";
+        $("sound").value = "";
+        state.photos = [null,null,null];
+        $("upload1").value = "";
+        $("upload2").value = "";
+        $("upload3").value = "";
+        await stopCamera();
         render();
       });
 
       $("randomBtn").addEventListener("click", () => {
-        const names = ["BOTHY VISITOR", "ZINE WALKER", "SCENE BRIDGER", "DIY ARCHIVIST", "NIGHT EDITOR"];
-        const places = ["Incheon", "Seoul", "Busan", "Highlands", "London", "Cebu", "Taipei"];
-        const sounds = ["synth bass", "train hum", "birds at 6am", "club kick", "page flips", "rain on roof"];
+        const names = ["BOTHY VISITOR","ZINE WALKER","SCENE BRIDGER","DIY ARCHIVIST"];
+        const taglines = ["Highland Zine Bothy × SUPERSONIC STUDIO","Step Into the Bothy","Shared Table"];
+        const places = ["Incheon","Seoul","Highlands","Cebu","Taipei"];
+        const sounds = ["rain on roof","synth bass","page flips","birds at 6am"];
         const because = [
           "because small scenes deserve a place to stay.",
           "because I want to keep the in-between moments.",
-          "because paper can hold what algorithms miss.",
-          "because I’m building a bridge with tiny pages."
+          "because paper can hold what algorithms miss."
         ];
-        const keep = ["a tiny friendship", "a flyer", "a sentence", "a feeling", "a sound in my pocket"];
+        const keep = ["a tiny friendship","a flyer","a sentence","a feeling"];
 
         $("name").value = names[Math.floor(Math.random()*names.length)];
+        $("tagline").value = taglines[Math.floor(Math.random()*taglines.length)];
         $("from").value = places[Math.floor(Math.random()*places.length)];
         $("sound").value = sounds[Math.floor(Math.random()*sounds.length)];
         $("because").value = because[Math.floor(Math.random()*because.length)];
         $("keep").value = keep[Math.floor(Math.random()*keep.length)];
-
-        const moods = ["LOUD","QUIET","MOUNTAIN","CITY"];
-        const collects = ["SOUND","MEMORY","ANGER","LOVE"];
-        setRadio("mood", moods[Math.floor(Math.random()*moods.length)]);
-        setRadio("collect", collects[Math.floor(Math.random()*collects.length)]);
         render();
       });
+
+      // camera buttons
+      $("startCam").addEventListener("click", startCamera);
+      $("stopCam").addEventListener("click", stopCamera);
+      $("flipCam").addEventListener("click", async () => {
+        state.facingMode = (state.facingMode === "user") ? "environment" : "user";
+        await startCamera();
+      });
+
+      $("snap1").addEventListener("click", () => snapTo(0));
+      $("snap2").addEventListener("click", () => snapTo(1));
+      $("snap3").addEventListener("click", () => snapTo(2));
+
+      $("clearPhotos").addEventListener("click", () => {
+        state.photos = [null,null,null];
+        $("upload1").value = "";
+        $("upload2").value = "";
+        $("upload3").value = "";
+        render();
+      });
+
+      // fallback uploads
+      $("upload1").addEventListener("change", async (e) => {
+        const f = e.target.files && e.target.files[0]; if(!f) return;
+        if(f.size > 6*1024*1024){ alert("6MB 이하로 업로드해줘"); e.target.value=""; return; }
+        state.photos[0] = await fileToDataUrl(f); render();
+      });
+      $("upload2").addEventListener("change", async (e) => {
+        const f = e.target.files && e.target.files[0]; if(!f) return;
+        if(f.size > 6*1024*1024){ alert("6MB 이하로 업로드해줘"); e.target.value=""; return; }
+        state.photos[1] = await fileToDataUrl(f); render();
+      });
+      $("upload3").addEventListener("change", async (e) => {
+        const f = e.target.files && e.target.files[0]; if(!f) return;
+        if(f.size > 6*1024*1024){ alert("6MB 이하로 업로드해줘"); e.target.value=""; return; }
+        state.photos[2] = await fileToDataUrl(f); render();
+      });
+    }
+
+    // Safety: tell user if camera API missing
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      console.warn("getUserMedia not available");
     }
 
     wire();
